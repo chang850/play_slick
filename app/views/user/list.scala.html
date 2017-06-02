@@ -1,0 +1,51 @@
+@(users: List[User])(implicit flash: play.api.mvc.Flash, messages: Messages)
+
+    @main("Current User List") {
+        <a href="/userForm"><button class="btn btn-warning" onclick="" role="button">CREATE</button></a>
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>USERNAME</th>
+                        <th>USEREMAIL</th>
+                        <th>USERPASSWORD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @users.map { user =>
+                    <tr>
+                        <td>@user.username</td>
+                        <td>@user.email</td>
+                        <td>@user.password</td>
+                        <td>
+                            <a href="/userView/@user.id"><button class="btn btn-warning" onclick="" role="button">VIEW</button></a>
+                            @*<button class="btn btn-warning" onclick="thisPage.deleteUser(@user.id)" role="button">VIEW</button>*@
+                            <button class="btn btn-warning" onclick="thisPage.deleteUser(@user.id)" role="button">
+                                DELETE</button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <script>
+     var thisPage = {
+         deleteUser: function (userId) {
+             if (!confirm("Are you Sure?"))
+                 return;
+             $.getJSON(
+                     "/userDelete/" + userId,
+                     function (data) {
+                         if (data.retcode != '100') {
+                             alert("FAILUR");
+                             return;
+                         }
+                         alert("Success");
+                         document.location.replace("/user/list");
+                     }
+             );
+         }
+     }
+  </script>

@@ -1,0 +1,25 @@
+@(project: Project, tasks: List[Task])
+
+@main(project.name) {
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>taskId</th>
+                    <th>taskColor</th>
+                    <th>taskStatus</th>
+                </tr>
+            </thead>
+            <tbody>
+            @tasks.map{task =>
+                <tr>
+                    <td>@task.id</td>
+                    <td>@task.color</td>
+                    <td>@task.status.toString</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+}

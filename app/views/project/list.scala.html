@@ -1,0 +1,21 @@
+@(projects: List[Project])
+	@main("Current Project List") {
+		<div class="container">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ProjectName</th>
+						<th>DetailView</th>
+					</tr>
+				</thead>
+				<tbody>
+					@projects.map{project =>
+						<tr>
+							<td>@project.name</td>
+							<td><a href="@routes.ProjectController.view(project.id)">details</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}

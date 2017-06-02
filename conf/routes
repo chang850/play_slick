@@ -1,0 +1,32 @@
+#PROJECT
+GET     /                                    controllers.UserController.form
+
+#PROJECT
+GET     /projects/list                       controllers.ProjectController.list
+GET     /projects/:id                        controllers.ProjectController.view(id: Long)
+PUT     /projects/:id/:name                  controllers.ProjectController.addTaskToProject(name: String, id: Long)
+DELETE  /projects/:name                      controllers.ProjectController.delete(name: String)
+
+#USER
+GET     /userList                            controllers.UserController.list
+GET     /userForm                            controllers.UserController.form
+GET     /userDelete/:id                      controllers.UserController.delete(id:Long)
+POST    /userForm/save                       controllers.UserController.save
+GET     /userView/:id                        controllers.UserController.view(id:Long)
+GET     /userPageList/:page                  controllers.UserController.pageList(page:Int)
+
+#Authentication
+GET     /login                              controllers.LoginController.login
+POST    /login                              controllers.LoginController.authenticate
+GET     /logout                             controllers.LoginController.logout
+
+#chat
+GET     /chatstart                           controllers.AkkaController.chatStart
+GET     /chat                                controllers.AkkaController.chat
+
+PATCH   /tasks/:id                           controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
+
+#PUT     /projects/:name                      controllers.ProjectController.save(name: String)
+#GET     /assets/*file                        controllers.Assets.at(path="/public", file: Asset)
+# Map static resources from the /public folder to the /assets URL path
+#GET     /assets/*file               controllers.Assets.at(path="/public", file)
