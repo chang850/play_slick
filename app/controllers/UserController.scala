@@ -9,7 +9,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
 
-class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) extends BaseController with I18nSupport{
+class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) extends BaseController with I18nSupport {
 
   val Home = Redirect(routes.UserController.list)
 
@@ -19,7 +19,7 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
       "username" -> nonEmptyText,
       "email" -> nonEmptyText,
       "password" -> nonEmptyText
-  )(models.User.apply)(models.User.unapply))
+    )(models.User.apply)(models.User.unapply))
 
   def form = withAuth { username => implicit rs =>
     Ok(views.html.user.userForm(userform))
@@ -29,9 +29,9 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
     userDAO.list.map(users => Ok(views.html.user.list(users)))
   }
 
-  def pageList(page:Int) = Action.async { implicit rs =>
+  def pageList(page: Int) = Action.async { implicit rs =>
     val userList = userDAO.page(page = page)
-    userList.map(users => Ok(views.html.user.page(users ,1 , "%")))
+    userList.map(users => Ok(views.html.user.page(users, 1, "%")))
   }
 
   def delete(id: Long) = Action.async { implicit rs =>
@@ -48,9 +48,10 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
       }
     )
   }
+
   def view(id: Long) = Action.async { implicit rs =>
-      for {
-        Some(user) <- userDAO.view(id)
-      } yield Ok(views.html.user.view(user))
-   }
+    for {
+      Some(user) <- userDAO.view(id)
+    } yield Ok(views.html.user.view(user))
+  }
 }

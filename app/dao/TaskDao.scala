@@ -11,10 +11,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaskDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) (implicit executionContext: ExecutionContext) extends HasDatabaseConfigProvider[JdbcProfile]
 {
-
-//  val dbConfig = dbConfigProvider.get[JdbcProfile]
-//  val db = dbConfig.db
-
   import profile.api._
 
   val Tasks = TableQuery[TasksTable]

@@ -9,7 +9,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
-
     <body>
 	   	<div class="jumbotron text-center">
             <h1>Play Board</h1>
@@ -22,15 +21,13 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="@routes.ProjectController.list">Logo</a>
+                        <a class="navbar-brand" href="@routes.ProjectController.list">ErrorMan</a>
                     </div>
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="@routes.UserController.form">ABOUT</a></li>
-                            <li><a href="@routes.UserController.list">SERVICES</a></li>
-                            <li><a href="@routes.UserController.list">PORTFOLIO</a></li>
+                            <li><a href="@routes.UserController.form">언어리소스 관리</a></li>
+                            <li><a href="@routes.UserController.list">에러코드 API</a></li>
                             <li><a href="@routes.ProjectController.list">PRICING</a></li>
-                            <li><a href="@routes.ProjectController.list">CONTACT</a></li>
                         </ul>
                     </div>
                 </div>
@@ -38,10 +35,11 @@
 	        @content
 	    </div>
     </body>
-    <footer class="container-fluid text-center">
-        <a href="#myPage" title="To Top">
-            <span class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-        <p>Bootstrap Theme Made By <a href="http://www.w3schools.com" title="Visit w3schools">www.w3schools.com</a></p>
-    </footer>
+
+    @*<footer class="container-fluid text-center">*@
+        @*<a href="#myPage" title="To Top">*@
+            @*<span class="glyphicon glyphicon-chevron-up"></span>*@
+        @*</a>*@
+        @*<p>Bootstrap Theme Made By <a href="http://www.w3schools.com" title="Visit w3schools">www.w3schools.com</a></p>*@
+    @*</footer>*@
     </html>

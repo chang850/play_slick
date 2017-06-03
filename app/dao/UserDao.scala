@@ -11,9 +11,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
   extends HasDatabaseConfigProvider[JdbcProfile]  {
 
-//  val dbConfig = dbConfigProvider.get[JdbcProfile]
-//  val db = dbConfig.db
-
   import profile.api._
 
   val Users = TableQuery[Users]
@@ -49,7 +46,6 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(
     db.run(action)
   }
 
-  /** Count computers with a filter. */
   def count(filter: String): Future[Int] = {
     db.run(Users.filter { user => user.username.toLowerCase like filter.toLowerCase }.length.result)
   }

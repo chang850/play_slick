@@ -19,7 +19,6 @@ libraryDependencies ++= Seq(
     "org.webjars" % "coffee-script" % "1.11.0",
     "org.webjars" % "less" % "2.5.3",
     "com.nulab-inc" %% "play2-oauth2-provider" % "0.17.0",
-    "redis.clients" % "jedis" % "2.9.0",
     specs2 % Test
 )
 
