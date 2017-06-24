@@ -19,14 +19,9 @@ GET     /userPageList/:page                  controllers.UserController.pageList
 GET     /login                              controllers.LoginController.login
 POST    /login                              controllers.LoginController.authenticate
 GET     /logout                             controllers.LoginController.logout
-
-#chat
-GET     /chatstart                           controllers.AkkaController.chatStart
-GET     /chat                                controllers.AkkaController.chat
-
 PATCH   /tasks/:id                           controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
 
-#PUT     /projects/:name                      controllers.ProjectController.save(name: String)
-#GET     /assets/*file                        controllers.Assets.at(path="/public", file: Asset)
-# Map static resources from the /public folder to the /assets URL path
-#GET     /assets/*file               controllers.Assets.at(path="/public", file)
+#RESOURCE
+GET     /resource/list                            controllers.ResourceController.list
+
+

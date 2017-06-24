@@ -1,0 +1,21 @@
+@(resources: List[Resource])(implicit flash: play.api.mvc.Flash, messages: Messages)
+@main("Current User List") {
+  <div class="container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>리소스 키</th>
+          <th>리소스 이름</th>
+        </tr>
+      </thead>
+      <tbody>
+      @resources.map { resource =>
+        <tr>
+          <td>@resource.resourceKey</td>
+          <td>@resource.resourceName
+        </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+}
