@@ -18,16 +18,26 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
       "id" -> ignored(0L),
       "username" -> nonEmptyText,
       "email" -> nonEmptyText,
-      "password" -> nonEmptyText
+      "password" -> nonEmptyText,
+      "company" -> ignored(0L)
     )(models.User.apply)(models.User.unapply))
 
   def form = withAuth { username => implicit rs =>
     Ok(views.html.user.userForm(userform))
   }
 
+  //Non-Blocking Future Type
   def list = Action.async { implicit rs =>
-    userDAO.list.map(users => Ok(views.html.user.list(users)))
+      userDAO.userCompanylist.map(users => Ok(views.html.user.list(users)))
   }
+
+  //1. Join Query
+  //2. VO Data Set
+  //3. Async로  데이터 전달
+//  def userCompanyList = Action.async { implicit rs =>
+//
+//    userDAO.list.map(users => Ok(views.html.user.list(users)))
+//  }
 
   def pageList(page: Int) = Action.async { implicit rs =>
     val userList = userDAO.page(page = page)
