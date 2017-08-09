@@ -82,14 +82,17 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(
   }
 
 
-  def userCompanylist: Future[List[UserListVO]] = {
+  def userCompanylist: Future[Page[UserListVO]] = {
     //JOIN 문 생성
     val query = for {
       (u, c) <- Users join Companys on (_.company === _.id)
     } yield (c.name, u.username, u.email)
 
-    db.run(query.to[List].result).map(r => r.map(a => UserListVO(a._1, a._2, a._3)))
 
+    //db.run(query.to[List].result).map(r => r.map(a => UserListVO(a._1, a._2, a._3)))
+    for {
+      result <- db.run(query.to[List].result)
+    } yield Page(result.map(r => UserListVO(r._1, r._2, r._3)), 1, 2, 3)
 
     //    for {
     //      list = query.result.map { rows => UserListVO(rows.name, rows.username, rows.email)
