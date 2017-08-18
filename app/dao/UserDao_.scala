@@ -2,43 +2,19 @@ package dao
 
 import javax.inject.Inject
 
-import models.{Company, Page, User}
+import models._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 import vo.UserListVO
+import slick.jdbc.MySQLProfile.api._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
+class UserDao_ @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
   extends HasDatabaseConfigProvider[JdbcProfile] {
-
-  import profile.api._
 
   val Companys = TableQuery[Companys]
   val Users = TableQuery[Users]
-
-  class Companys(tag: Tag) extends Table[Company](tag, "COMPANY") {
-    def id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-
-    def name = column[String]("NAME")
-
-    def * = (id, name) <> (Company.tupled, Company.unapply)
-  }
-
-  //model --> Company 관계 추가
-  class Users(tag: Tag) extends Table[User](tag, "USER") {
-    def id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-
-    def username = column[String]("USERNAME")
-
-    def email = column[String]("EMAIL")
-
-    def password = column[String]("PASSWORD")
-
-    def company = column[Long]("COMPANY")
-
-    def * = (id, username, email, password, company) <> (User.tupled, User.unapply)
-  }
 
   def view(id: Long): Future[Option[User]] = {
     db.run(Users.filter(_.id === id).result.headOption)
@@ -49,9 +25,9 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(
   }
 
   //Non-Blocking Future Type
-  def list: Future[List[User]] = {
-    db.run(Users.to[List].result)
-  }
+//  def list: Future[List[User]] = {
+//    db.run(Users.to[List].result)
+//  }
 
   def delete(id: Long): Future[Int] = {
     val user = Users.filter(_.id === id)
@@ -82,6 +58,14 @@ class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(
   }
 
 
+  def list: Future[List[UserListVO]] = {
+    val query = for {
+      (u, c) <- Users join Companys on (_.company === _.id)
+    } yield (c.name, u.username, u.email)
+    db.run(query.to[List].result).map(r => r.map(a => UserListVO(a._1, a._2, a._3)))
+  }
+
+  //조인 List
   def userCompanylist: Future[Page[UserListVO]] = {
     //JOIN 문 생성
     val query = for {

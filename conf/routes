@@ -6,7 +6,7 @@ GET     /projects/list                       controllers.ProjectController.list
 GET     /projects/:id                        controllers.ProjectController.view(id: Long)
 PUT     /projects/:id/:name                  controllers.ProjectController.addTaskToProject(name: String, id: Long)
 DELETE  /projects/:name                      controllers.ProjectController.delete(name: String)
-
+POST    /uploadFile                          controllers.UserController.uploadFile
 #USER
 GET     /userList                            controllers.UserController.list
 GET     /userForm                            controllers.UserController.form
