@@ -9,7 +9,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
 
-class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) extends BaseController with I18nSupport {
+class UserController @Inject()(userDao: UserDao, val messagesApi: MessagesApi) extends BaseController with I18nSupport {
 
   val Home = Redirect(routes.UserController.list)
 
@@ -22,12 +22,12 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
       "company" -> ignored(0L)
     )(models.User.apply)(models.User.unapply))
 
-  //Form
+  //사용자 추가 폼을 내려주는데... //popup call 할때 정보 내려주는 식으로 하면 될듯
   def form = withAuth { username => implicit rs =>
     Ok(views.html.user.userForm(userform))
   }
 
-  //File Upload 구현
+  //한글 TEST
   def uploadFile = Action(parse.multipartFormData) { rs =>
     rs.body.file("picture").map{ picture =>
       import java.io.File
@@ -42,29 +42,27 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
   }
 
 
-  /* User Join On Company --> UserListVO */
   def list = Action.async { implicit rs =>
-    userDAO.list.map(users => Ok(views.html.user.list(users)))
+    userDao.list.map(users => Ok(views.html.user.list(users)))
   }
 
   //Page List
   def pageList(page: Int) = Action.async { implicit rs =>
-    val userList = userDAO.page(page = page)
-    userList.map(users => Ok(views.html.user.page(users, 1, "%")))
+    userDao.page(page).map(users => Ok(views.html.user.page(users, 1, "%")))
   }
 
   //삭제
   def delete(id: Long) = Action.async { implicit rs =>
-    userDAO.delete(id).map(users => Ok)
+    userDao.delete(id).map(users => Ok)
   }
 
   //저장
   def save = Action.async { implicit rs =>
     userform.bindFromRequest.fold(
-      formWithErrors => userDAO.list.map(users => BadRequest(views.html.user.userForm(formWithErrors))),
+      formWithErrors => userDao.list.map(users => BadRequest(views.html.user.userForm(formWithErrors))),
       user => {
         for {
-          _ <- userDAO.save(user)
+          _ <- userDao.save(user)
         } yield Home.flashing("success" -> "Computer %s has been created".format(user.username))
       }
     )
@@ -73,7 +71,7 @@ class UserController @Inject()(userDAO: UserDao, val messagesApi: MessagesApi) e
   //상세보기
   def view(id: Long) = Action.async { implicit rs =>
     for {
-      Some(user) <- userDAO.view(id)
+      Some(user) <- userDao.view(id)
     } yield Ok(views.html.user.view(user))
   }
 }
