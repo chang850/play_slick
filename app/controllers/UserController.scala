@@ -29,6 +29,7 @@ class UserController @Inject()(userDao: UserDao, val messagesApi: MessagesApi) e
 
   //한글 TEST
   //한글 test 2
+  //한글 test 3
   def uploadFile = Action(parse.multipartFormData) { rs =>
     rs.body.file("picture").map{ picture =>
       import java.io.File
