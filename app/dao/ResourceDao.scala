@@ -55,17 +55,42 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
     resourceDetailList returning resourceDetailList.map(_.id) += resourceDetail
   }
 
-  def saveResourceForm(resourceForm: ResourceForm): Future[Unit] = {
+//  def insert(resourceDetail: ResourceDetail): Future[Unit] = {
+//    db.run(resourceDetailList += resourceDetail).map(_ => ())
+//  }
+
+  //One To Many 저장 완료
+  def saveResourceForm(resourceForm: ResourceForm): Future[Seq[Long]] = {
+
     val resourceData = resourceForm.resource
     val resourceDataDetailList = resourceForm.resourceDetailList
     val interaction = for {
-      resourceId <- resourceList returning resourceList.map(_.id) += resourceData
-      resourceDetailData <- resourceDataDetailList
-      id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
-    }yield id
+          resourceId <- resourceList returning resourceList.map(_.id) += resourceData
+          id <-DBIO.sequence(resourceDataDetailList.map(u=>insert(ResourceDetail(u.id,u.resourceText, u.resourceLocale, resourceId))))
+//          resourceDetailData <- resourceDataDetailList
+//          id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
+     }yield id
+
     db.run(interaction.transactionally)
+    //    val resourceData = Resource(1, "changhee", "mp")
+    //    val resourceDataDetailList : Seq[ResourceDetail] = Seq(ResourceDetail(1,"changhee", "mp9709", 1))
+//    resourceDataDetailList match {
+//      case Nil => save(resourceData)
+//      case _=> val interaction = for {
+//        resourceId <- resourceList returning resourceList.map(_.id) += resourceData
+//        resourceDetailData <- resourceDataDetailList
+//        id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceDetailData.id))
+//      }yield id
+//
+//      db.run(interaction.transactionally)
+//    }
+//    val interaction = for {
+//      resourceDetailData <- resourceDataDetailList
+//      id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
+//    }yield id
   }
 
+  //조인 ResourceVO 완료
   def joinList = {
     val query = for {
       (rd, r) <- resourceDetailList join resourceList on (_.resourceKey === _.id)

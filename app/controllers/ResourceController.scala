@@ -53,11 +53,13 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
              )(models.ResourceDetail.apply)(models.ResourceDetail.unapply))
         )(FormVO.ResourceForm.apply)(FormVO.ResourceForm.unapply))
 
+  //List 성공
   def list = Action.async { implicit rs =>
     resourceDao.joinList
     resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
   }
 
+  //Form Data 생성
   def create = Action { implicit rs =>
       Ok(views.html.resource.add(resourceForm))
   }
