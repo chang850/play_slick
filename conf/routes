@@ -1,6 +1,10 @@
 #PROJECT
 GET     /                                    controllers.UserController.form
 
+
+
+#Resource
+GET     /resource                            controllers.ResourceController.list
 #PROJECT
 GET     /projects/list                       controllers.ProjectController.list
 GET     /projects/:id                        controllers.ProjectController.view(id: Long)
@@ -22,6 +26,8 @@ GET     /logout                             controllers.LoginController.logout
 PATCH   /tasks/:id                           controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
 
 #RESOURCE
-GET     /resource/list                            controllers.ResourceController.list
+GET     /resource/list                       controllers.ResourceController.list
+POST    /resource/save                       controllers.ResourceController.save
+GET     /resource/create                       controllers.ResourceController.create
 
-
+GET     /assets/*file           controllers.Assets.at(path="/public", file)

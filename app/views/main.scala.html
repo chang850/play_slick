@@ -1,45 +1,140 @@
 @(title: String)(content: Html)
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>@title</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-	   	<div class="jumbotron text-center">
-            <h1>Play Board</h1>
-            <p>Chyun Frist Play Board</p>
-            <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container">
+    <html>
+        <head>
+            <title>@title</title>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="@routes.Assets.at("lib/bootstrap/css/bootstrap.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("lib/metisMenu/metisMenu.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("lib/font-awesome/css/font-awesome.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("/lib/startbootstrap-sb-admin-2/css/sb-admin-2.min.css")">
+            <script src="@routes.Assets.at("/lib/startbootstrap-sb-admin-2/js/sb-admin-2.min.js")"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+        </head>
+
+        <body>
+            <div id="wrapper">
+                <!-- Navigation -->
+                <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="@routes.ProjectController.list">ErrorMan</a>
+                        <a class="navbar-brand" href="index.html">SB Admin v2.0</a>
                     </div>
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="@routes.UserController.form">언어리소스 관리</a></li>
-                            <li><a href="@routes.UserController.list">에러코드 API</a></li>
-                            <li><a href="@routes.ProjectController.list">PRICING</a></li>
-                        </ul>
+                        <!-- /.navbar-header -->
+                    <ul class="nav navbar-top-links navbar-right">
+                            <!-- /.dropdown -->
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-alerts">
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <i class="fa fa-comment fa-fw"></i> New Comment
+                                            <span class="pull-right text-muted small">4 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                            <span class="pull-right text-muted small">12 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                            <span class="pull-right text-muted small">4 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <i class="fa fa-tasks fa-fw"></i> New Task
+                                            <span class="pull-right text-muted small">4 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                            <span class="pull-right text-muted small">4 minutes ago</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a class="text-center" href="#">
+                                        <strong>See All Alerts</strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                                <!-- /.dropdown-alerts -->
+                        </li>
+                            <!-- /.dropdown -->
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                </li>
+                            </ul>
+                                <!-- /.dropdown-user -->
+                        </li>
+                            <!-- /.dropdown -->
+                    </ul>
+                        <!-- /.navbar-top-links -->
+                    <div class="navbar-default sidebar" role="navigation">
+                        <div class="sidebar-nav navbar-collapse">
+                            <ul class="nav" id="side-menu">
+                                <li><a href="@routes.UserController.form"><i class="fa fa-dashboard fa-fw"></i>언어리소스 관리</a></li>
+                                <li><a href="@routes.UserController.list"><i class="fa fa-table fa-fw"></i>에러코드 API</a></li>
+                                <li><a href="@routes.ProjectController.list"><i class="fa fa-table fa-fw"></i>PRICING</a></li>
+                            </ul>
+                        </div>
+                            <!-- /.sidebar-collapse -->
+                    </div>
+                        <!-- /.navbar-static-side -->
+                </nav>
+                <!-- Page Content -->
+                <div id="page-wrapper">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @content
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </nav>
-	        @content
-	    </div>
-    </body>
-
-    @*<footer class="container-fluid text-center">*@
-        @*<a href="#myPage" title="To Top">*@
-            @*<span class="glyphicon glyphicon-chevron-up"></span>*@
-        @*</a>*@
-        @*<p>Bootstrap Theme Made By <a href="http://www.w3schools.com" title="Visit w3schools">www.w3schools.com</a></p>*@
-    @*</footer>*@
+            </div>
+        </body>
     </html>

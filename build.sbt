@@ -10,16 +10,21 @@ routesGenerator := InjectedRoutesGenerator
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
+
 libraryDependencies ++= Seq(
     "com.typesafe.play" % "play-slick_2.11" % "2.1.0",
     "com.typesafe.play" % "play-slick-evolutions_2.11" % "2.1.0",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test",
     "mysql" % "mysql-connector-java" % "5.1.34",
-    "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3",
     "org.webjars" % "coffee-script" % "1.11.0",
+    "org.webjars" % "bootstrap" % "3.3.6",
+    "org.webjars" % "startbootstrap-sb-admin-2" % "3.3.7+1",
     "org.webjars" % "less" % "2.5.3",
+    "org.webjars" % "font-awesome" % "4.3.0",
+    "org.webjars" % "metisMenu" % "1.1.3",
     "com.nulab-inc" %% "play2-oauth2-provider" % "0.17.0",
-    specs2 % Test
+    "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3"
+//  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test",
+//  specs2 % Test
 )
 
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
