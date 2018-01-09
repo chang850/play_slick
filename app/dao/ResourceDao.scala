@@ -41,6 +41,19 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
     db.run(query)
   }
 
+  //delete query
+  def delete(id: Long): Future[Int] = {
+
+    val query = resourceList.filter(_.id === id)
+    val interaction = for {
+      resources <- query.result
+      _ <- DBIO.sequence(resources.map(r => resourceDetailList.filter(_.resourceKey === r.id).delete))
+      resourcesDeleted <- query.delete
+    } yield resourcesDeleted
+
+    db.run(interaction.transactionally)
+  }
+
   //저장
   def save(resource: Resource): Future[Unit] = {
     db.run(resourceList += resource).map(_ => ())

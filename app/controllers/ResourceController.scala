@@ -3,19 +3,25 @@ package controllers
 import javax.inject.Inject
 
 import FormVO.ResourceForm
-import play.api.data.Forms._
 import dao.ResourceDao
-import models.{Resource, ResourceData, ResourceDetail}
+import models.ResourceDetail
 import play.api.data.Form
-import play.api.data.Forms.{ignored, mapping}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.data.Forms.{ignored, mapping, _}
+import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
 
 
-class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: MessagesApi) extends BaseController with I18nSupport {
+class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: MessagesApi) extends BaseController {
 
   val Home = Redirect(routes.UserController.list)
+
+  //1.pagination
+  //2.search
+  //3.authentication
+  //4.Flyway
+  //5.cache
+  //6.schelduled
 
   //Form Create
 //  val resourceForm = Form(
@@ -53,7 +59,12 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
              )(models.ResourceDetail.apply)(models.ResourceDetail.unapply))
         )(FormVO.ResourceForm.apply)(FormVO.ResourceForm.unapply))
 
+  //작업 진행중
+  //search Form 작업
+  //search Form 을 만들고 List 와 함께 던진다.
+  //search Form 과 함께 받은 후 list 페이지에서 Data를 꺼낸뒤 바인딩 한 후 던지는 식으로 진행
   //List 성공
+  //현재 List 인데 --> search 생성하고 + list 거기서 가져온뒤 뿌린다.
   def list = Action.async { implicit rs =>
     resourceDao.joinList
     resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
@@ -63,7 +74,6 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   def create = Action { implicit rs =>
       Ok(views.html.resource.add(resourceForm))
   }
-
 
   //한방에 저장 하려면 해당 vo 를 조합 하는 형태로 만든다.
   //저장
@@ -78,20 +88,23 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
      )
   }
 
+
+  //삭제 - 완료
+  def delete(id: Long) = Action.async { implicit rs =>
+    resourceDao.delete(id).map(num => Ok(s"$num projects deleted"))
+  }
+
+  //작업 진행중
   //갱신
   def update(name: String) = Action.async { implicit rs =>
     resourceDao.joinList
     resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
   }
 
-  //삭제
-  def delete(name: String) = Action.async { implicit rs =>
-    resourceDao.joinList
-    resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
-  }
-
-  //상세보기
-  def view(name: String) = Action.async { implicit rs =>
+  //작업 진행중
+  //상세보기 ===> Resource + ResourceDetailList 로 해야한다.
+  def view(id: Long) = Action.async { implicit rs =>
+    //두단계로 뿌릴 것인가 ? vo 를 만들 것인가 선택
     resourceDao.joinList
     resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
   }

@@ -9,7 +9,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
 
-class UserController @Inject()(userDao: UserDao, val messagesApi: MessagesApi) extends BaseController with I18nSupport {
+class UserController @Inject()(userDao: UserDao, val messagesApi: MessagesApi) extends BaseController {
 
   val Home = Redirect(routes.UserController.list)
 
