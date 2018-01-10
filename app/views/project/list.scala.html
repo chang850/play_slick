@@ -1,4 +1,4 @@
-@(projects: List[Project])
+@(projects: List[Project])(implicit flash: play.api.mvc.Flash, messages: Messages)
 	@main("Current Project List") {
 		<div class="container">
 			<table class="table">

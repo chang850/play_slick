@@ -2,13 +2,12 @@ package controllers
 
 import javax.inject.Inject
 
-import base.Secured
 import dao.{ProjectDao, TaskDao}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
 
-class ProjectController @Inject()(projectDAO: ProjectDao, taskDAO: TaskDao , val messagesApi: MessagesApi) extends Controller with Secured with I18nSupport {
+class ProjectController @Inject()(projectDAO: ProjectDao, taskDAO: TaskDao, val messagesApi: MessagesApi) extends BaseController {
 
   def addTaskToProject(color: String, projectId: Long) = Action.async {
     implicit rs =>

@@ -1,5 +1,5 @@
 #PROJECT
-GET     /                                    controllers.UserController.form
+#GET     /                                    controllers.UserController.form
 
 
 
@@ -10,19 +10,19 @@ GET     /projects/list                       controllers.ProjectController.list
 GET     /projects/:id                        controllers.ProjectController.view(id: Long)
 PUT     /projects/:id/:name                  controllers.ProjectController.addTaskToProject(name: String, id: Long)
 DELETE  /projects/:name                      controllers.ProjectController.delete(name: String)
-POST    /uploadFile                          controllers.UserController.uploadFile
+#POST    /uploadFile                          controllers.UserController.uploadFile
 #USER
-GET     /userList                            controllers.UserController.list
-GET     /userForm                            controllers.UserController.form
-GET     /userDelete/:id                      controllers.UserController.delete(id:Long)
-POST    /userForm/save                       controllers.UserController.save
-GET     /userView/:id                        controllers.UserController.view(id:Long)
-GET     /userPageList/:page                  controllers.UserController.pageList(page:Int)
+#GET     /userList                            controllers.UserController.list
+#GET     /userForm                            controllers.UserController.form
+#GET     /userDelete/:id                      controllers.UserController.delete(id:Long)
+#POST    /userForm/save                       controllers.UserController.save
+#GET     /userView/:id                        controllers.UserController.view(id:Long)
+#GET     /userPageList/:page                  controllers.UserController.pageList(page:Int)
 
 #Authentication
-GET     /login                              controllers.LoginController.login
-POST    /login                              controllers.LoginController.authenticate
-GET     /logout                             controllers.LoginController.logout
+#GET     /login                              controllers.LoginController.login
+#POST    /login                              controllers.LoginController.authenticate
+#GET     /logout                             controllers.LoginController.logout
 PATCH   /tasks/:id                           controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
 
 #RESOURCE
@@ -30,4 +30,15 @@ GET     /resource/list                       controllers.ResourceController.list
 POST    /resource/save                       controllers.ResourceController.save
 GET     /resource/create                       controllers.ResourceController.create
 
-GET     /assets/*file           controllers.Assets.at(path="/public", file)
+
+# Home page
+GET         /                                controllers.ApplicationController.index
+GET         /signIn                          controllers.ApplicationController.signIn
+GET         /signUp                          controllers.ApplicationController.signUp
+GET         /signOut                         controllers.ApplicationController.signOut
+GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
+POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
+POST        /signUp                          controllers.SignUpController.signUp
+
+GET         /assets/*file                    controllers.Assets.at(path="/public", file)
+GET         /webjars/*file                   controllers.WebJarAssets.at(file)
