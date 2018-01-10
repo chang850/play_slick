@@ -17,12 +17,15 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 
   val Home = Redirect(routes.UserController.list)
 
+  //Secure social
+
   //1.pagination
   //2.search
-  //3.authentication
+  //3.authentication -> pagination 은 일단 무시
   //4.Flyway
   //5.cache
   //6.schelduled
+
 
   //Form Create
   //  val resourceForm = Form(
@@ -106,7 +109,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //저장
   def save = Action.async { implicit rs =>
     resourceForm.bindFromRequest.fold(
-      formWithErrors => resourceDao.list.map(resoures => BadRequest(views.html.resource.add(formWithErrors))),
+      formWithErrors => resourceDao.joinList.map(resoures => BadRequest(views.html.resource.add(formWithErrors))),
       resourceData => {
         for {
           _ <- resourceDao.saveResourceForm(resourceData)
@@ -114,6 +117,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
       }
     )
   }
+
 
 
   //삭제 - 완료

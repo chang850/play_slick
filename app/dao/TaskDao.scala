@@ -29,7 +29,8 @@ class TaskDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
   }
 
   implicit val taskStatusColumnType = MappedColumnType.base[TaskStatus.Value, String](
-    _.toString, string => TaskStatus.withName(string))
+    _.toString, string => TaskStatus.withName(string)
+  )
 
 
   def findById(id: Long): Future[Task] =
