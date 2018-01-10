@@ -1,4 +1,4 @@
-name := """play-slick-example"""
+name := """play-rms"""
 
 version := "1.0-SNAPSHOT"
 

@@ -36,10 +36,10 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
   }
 
   //조회
-  def list: Future[List[Resource]] = {
-    val query = resourceList.to[List].result
-    db.run(query)
-  }
+//  def list: Future[List[Resource]] = {
+//    val query = resourceList.to[List].result
+//    db.run(query)
+//  }
 
   //delete query
   def delete(id: Long): Future[Int] = {
@@ -104,11 +104,19 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
   }
 
   //조인 ResourceVO 완료
-  def joinList = {
+  def joinList : Future[List[ResourceVO]] = {
     val query = for {
       (rd, r) <- resourceDetailList join resourceList on (_.resourceKey === _.id)
     } yield (r.resourceKey, r.resourceName, rd.resourceLocale, rd.resourceText)
-    db.run(query.result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+  }
+
+  //keyword 넣고 만든다.
+  def list(searchVO : ResourceVO.SearchVO) : Future[List[ResourceVO]] = {
+    val query = for {
+      (rd, r) <- resourceDetailList join resourceList on (_.resourceKey === _.id)
+    } yield (r.resourceKey, r.resourceName, rd.resourceLocale, rd.resourceText)
+    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
   }
 }
 

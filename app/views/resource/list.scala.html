@@ -1,54 +1,66 @@
-@(resources: List[Resource])(implicit flash: play.api.mvc.Flash, messages: Messages)
+@import vo.ResourceVO
+@import b3.vertical.fieldConstructor
+@(resources: List[ResourceVO], resourceSearchForm : Form[ResourceVO.SearchVO])(implicit flash: play.api.mvc.Flash, messages: Messages)
+@fruits = @{ Seq("A"->"Apples","P"->"Pears","B"->"Bananas") }
+@opts = @{ Seq("M"->"Male","F"->"Female") }
 @main("Current User List") {
-    <h2 align="center">언어리소스 리스트</h2>
-    <div id ="search-box">
-      <div class="panel panel-primary">
-        <div class="panel-heading">검색조건</div>
-        <div class="panel-body">
-          <form method="GET" action="./list" class = "form-inline" id="chang">
-            <div class="form-group input-group">
-              <span class="changhee2">
-                <input type="text" class="form-control" id="search.keywordString" name="search.keywordString" value="{{search.keywordString}}" placeholder="Enter Search" >
-                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-              <!-- 추가 -->
-             <a href ="@routes.ResourceController.create" class="btn btn-danger" role = "button"><i class="glyphicon glyphicon-plus"></i></a>
-          </form>
-        </div>
+  <h2 align="center">Test</h2>
+  <div id ="search-box">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Search</div>
+      <div class="panel-body">
+        @b3.form(routes.ResourceController.list) {
+          @b3.text(resourceSearchForm("keywordString"), '_label -> "언어리소스 ID", 'placeholder -> "Pick a username")
+          @b3.select(resourceSearchForm("optionSelect"), options = fruits, '_label -> "Select")
+          @b3.radio(resourceSearchForm("radioInput"), options = opts, '_label -> "Radio Group" )
+          @b3.submit('class -> "btn btn-default") { Search }
+        }
+        <a href ="@routes.ResourceController.create" class="btn btn-danger" role = "button"><i class="glyphicon glyphicon-plus"></i></a>
       </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">언어별 리소스</div>
-        <div class="panel-body">
-        <div id = "data-table">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>리소스 키</th>
-                <th>리소스 이름</th>
-                <th>리소스 이름</th>
-                <th>리소스 이름</th>
-                <th>리소스 이름</th>
-                <th>리소스 이름</th>
-                <th>리소스 이름</th>
-              </tr>
-            </thead>
-            <tbody>
-                @resources.map { resource =>
-                  <tr>
-                    <td>@resource.resourceKey</td>
-                    <td>@resource.resourceName</td>
-                    <td>@resource.resourceName</td>
-                    <td>@resource.resourceName</td>
-                    <td>@resource.resourceName</td>
-                    <td>@resource.resourceName</td>
-                    <td>@resource.resourceName</td>
-                  </tr>
-                }
-            </tbody>
-          </table>
-        </div>
-        </div>
+      @*<form method="GET" action="./list" class = "form-inline" id="chang">*@
+      @*<div class="form-group i0nput-group">*@
+      @*<span class="changhee2">*@
+      @*<input type="text" class="form-control" id="search.keywordString" name="search.keywordString" value="{{search.keywordString}}" placeholder="Enter Search" >*@
+      @*<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+      @*</span>*@
+      @*</div>*@
+        <!-- 추가 -->
+
+      @*</form>*@
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-heading">Results</div>
+    <div class="panel-body">
+      <div id = "data-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>리소스 키</th>
+              <th>리소스 이름</th>
+              <th>리소스 이름</th>
+              <th>리소스 이름</th>
+              <th>리소스 이름</th>
+              <th>리소스 이름</th>
+              <th>리소스 이름</th>
+            </tr>
+          </thead>
+          <tbody>
+          @resources.map { resource =>
+            <tr>
+              <td>@resource.resourceKey</td>
+              <td>@resource.resourceName</td>
+              <td>@resource.resourceName</td>
+              <td>@resource.resourceName</td>
+              <td>@resource.resourceName</td>
+              <td>@resource.resourceName</td>
+              <td>@resource.resourceName</td>
+            </tr>
+          }
+          </tbody>
+        </table>
       </div>
     </div>
+  </div>
+  </div>
 }
