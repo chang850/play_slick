@@ -36,7 +36,7 @@ trait DBTableDefinitions extends HasDatabaseConfigProvider[JdbcProfile]{
   class LoginInfos(tag: Tag) extends Table[DBLoginInfo](tag, "LOGININFO") {
     def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
     def providerID = column[String]("PROVIDERID")
-    def providerKey = column[String]("PROVIDERKey")
+    def providerKey = column[String]("PROVIDERKEY")
     def * = (id.?, providerID, providerKey) <> (DBLoginInfo.tupled, DBLoginInfo.unapply)
   }
 

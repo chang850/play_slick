@@ -24,7 +24,7 @@ class ErrorHandler @Inject()(
                               sourceMapper: OptionalSourceMapper,
                               router: Provider[Router],
                               val messagesApi: MessagesApi
-                            ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) with SecuredErrorHandler with UnsecuredErrorHandler with I18nSupport {
+                            ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) with SecuredErrorHandler with UnsecuredErrorHandler  with I18nSupport {
 
   /**
     * Called when a user is not authenticated.

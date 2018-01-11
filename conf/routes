@@ -36,7 +36,7 @@ GET     /resource/create                       controllers.ResourceController.cr
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signUp                          controllers.ApplicationController.signUp
 GET         /signOut                         controllers.ApplicationController.signOut
-GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
+#GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
 POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
 POST        /signUp                          controllers.SignUpController.signUp
 

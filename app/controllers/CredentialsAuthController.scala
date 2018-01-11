@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.Authenticator.Implicits._
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.util.{Clock, Credentials}
+import com.mohiva.play.silhouette.api.util.{Clock, Credentials, PasswordHasherRegistry}
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers._
 import net.ceedubs.ficus.Ficus._
@@ -30,7 +30,6 @@ import scala.language.postfixOps
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info repository implementation.
  * @param credentialsProvider The credentials provider.
- * @param socialProviderRegistry The social provider registry.
  * @param configuration The Play configuration.
  * @param clock The clock instance.
  */
@@ -39,7 +38,7 @@ class CredentialsAuthController @Inject() (val messagesApi: MessagesApi,
                                                userService: UserService,
                                                authInfoRepository: AuthInfoRepository,
                                                credentialsProvider: CredentialsProvider,
-                                               socialProviderRegistry: SocialProviderRegistry,
+                                               passwordHasherRegistry: PasswordHasherRegistry,
                                                configuration: Configuration,
                                                clock: Clock)
   extends WebController {
@@ -51,7 +50,7 @@ class CredentialsAuthController @Inject() (val messagesApi: MessagesApi,
    */
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.signIn(form, socialProviderRegistry))),
+      form => Future.successful(BadRequest(views.html.signIn(form))),
       data => {
         val credentials = Credentials(data.email, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>

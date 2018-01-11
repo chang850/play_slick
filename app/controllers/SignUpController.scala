@@ -5,16 +5,14 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.services.AvatarService
 import com.mohiva.play.silhouette.api.util.PasswordHasher
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
 import forms.SignUpForm
+import models.User
 import models.services.UserService
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
-import models.User
 import utils.MyEnv
 
 import scala.concurrent.Future
@@ -25,7 +23,6 @@ import scala.concurrent.Future
  * @param messagesApi The Play messages API.
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info repository implementation.
- * @param avatarService The avatar service implementation.
  * @param passwordHasher The password hasher implementation.
  */
 class SignUpController @Inject() (
@@ -33,8 +30,8 @@ class SignUpController @Inject() (
                                     val silhouette: Silhouette[MyEnv[User]],
                                     userService: UserService,
                                     authInfoRepository: AuthInfoRepository,
-                                    avatarService: AvatarService,
-                                    passwordHasher: PasswordHasher)
+                                    passwordHasher: PasswordHasher
+                                  )
   extends WebController {
 
   /**
@@ -62,8 +59,7 @@ class SignUpController @Inject() (
               avatarURL = None
             )
             for {
-              avatar <- avatarService.retrieveURL(data.email)
-              user <- userService.save(user.copy(avatarURL = avatar))
+              user <- userService.save(user)
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
               authenticator <- env.authenticatorService.create(loginInfo)
               value <- env.authenticatorService.init(authenticator)
