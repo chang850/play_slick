@@ -104,18 +104,25 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
   }
 
   //조인 ResourceVO 완료
-  def joinList : Future[List[ResourceVO]] = {
-    val query = for {
-      (rd, r) <- resourceDetailList join resourceList on (_.resourceKey === _.id)
-    } yield (r.resourceKey, r.resourceName, rd.resourceLocale, rd.resourceText)
-    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
-  }
+//  def joinList : Future[List[ResourceVO]] = {
+//    val query = for {
+//      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
+//    } yield (rd.resourceKey, rd.resourceName, r.resourceLocale, r.resourceText)
+//    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+//  }
+
+    def joinList : Future[List[ResourceVO]] = {
+      val query = for {
+        (rd, r) <- resourceList joinLeft  resourceDetailList on (_.id === _.resourceKey)
+      } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
+      db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+    }
 
   //keyword 넣고 만든다.
   def list(searchVO : ResourceVO.SearchVO) : Future[List[ResourceVO]] = {
     val query = for {
-      (rd, r) <- resourceDetailList join resourceList on (_.resourceKey === _.id)
-    } yield (r.resourceKey, r.resourceName, rd.resourceLocale, rd.resourceText)
+      (rd, r) <- resourceList joinLeft  resourceDetailList on (_.id === _.resourceKey)
+    } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
     db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
   }
 }
