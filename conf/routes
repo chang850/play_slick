@@ -1,6 +1,6 @@
 #PROJECT
 #GET     /                                    controllers.UserController.form
-
+GET         /                                controllers.ApplicationController.index
 
 
 #Resource
@@ -32,7 +32,7 @@ GET     /resource/create                       controllers.ResourceController.cr
 
 
 # Home page
-GET         /                                controllers.ApplicationController.index
+
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signUp                          controllers.ApplicationController.signUp
 GET         /signOut                         controllers.ApplicationController.signOut

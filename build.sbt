@@ -21,22 +21,21 @@ libraryDependencies ++= Seq(
     "org.webjars" % "bootstrap" % "3.3.6",
     "org.webjars" % "startbootstrap-sb-admin-2" % "3.3.7+1",
     "org.webjars" % "less" % "2.5.3",
-    "com.typesafe.play" %% "play-mailer" % "5.0.0",
     "org.webjars" % "font-awesome" % "4.3.0",
     "org.webjars" % "metisMenu" % "1.1.3",
     "com.adrianhurt" %% "play-bootstrap" % "1.1-P25-B3",
     "com.h2database" % "h2" % "1.4.188",
-    "net.codingwell" %% "scala-guice" % "4.0.0",
-    "com.mohiva" %% "play-silhouette" % "3.0.2",
-    "net.ceedubs" %% "ficus" % "1.1.2",
-    "com.mohiva" %% "play-silhouette-testkit" % "3.0.2" % "test",
     "org.webjars" %% "webjars-play" % "2.4.0-1",
-    specs2 % Test,
-    cache,
-    ws,
-    evolutions,
-    filters
 
+    //silhouette
+    "com.mohiva" %% "play-silhouette" % "4.0.0",
+    "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
+    "com.mohiva" %% "play-silhouette-persistence" % "4.0.0",
+    "com.mohiva" %% "play-silhouette-crypto-jca" % "4.0.0",
+    "com.mohiva" %% "play-silhouette-testkit" % "4.0.0" % "test",
+    "net.codingwell" %% "scala-guice" % "4.0.1",
+    "com.iheart" %% "ficus" % "1.2.6",
+    "com.typesafe.play" %% "play-mailer" % "5.0.0"
 //  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % "test",
 //  specs2 % Test
 )

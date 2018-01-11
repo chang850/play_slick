@@ -15,26 +15,27 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 import models.User
+import utils.MyEnv
+
 import scala.concurrent.Future
 
 /**
  * The sign up controller.
  *
  * @param messagesApi The Play messages API.
- * @param env The Silhouette environment.
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info repository implementation.
  * @param avatarService The avatar service implementation.
  * @param passwordHasher The password hasher implementation.
  */
 class SignUpController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User, CookieAuthenticator],
-  userService: UserService,
-  authInfoRepository: AuthInfoRepository,
-  avatarService: AvatarService,
-  passwordHasher: PasswordHasher)
-  extends Silhouette[User, CookieAuthenticator] {
+                                    val messagesApi: MessagesApi,
+                                    val silhouette: Silhouette[MyEnv[User]],
+                                    userService: UserService,
+                                    authInfoRepository: AuthInfoRepository,
+                                    avatarService: AvatarService,
+                                    passwordHasher: PasswordHasher)
+  extends WebController {
 
   /**
    * Registers a new user.
@@ -68,8 +69,8 @@ class SignUpController @Inject() (
               value <- env.authenticatorService.init(authenticator)
               result <- env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index()))
             } yield {
-              env.eventBus.publish(SignUpEvent(user, request, request2Messages))
-              env.eventBus.publish(LoginEvent(user, request, request2Messages))
+              env.eventBus.publish(SignUpEvent(user, request))
+              env.eventBus.publish(LoginEvent(user, request))
               result
             }
         }

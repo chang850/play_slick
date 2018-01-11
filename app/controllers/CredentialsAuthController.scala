@@ -7,7 +7,6 @@ import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.{Clock, Credentials}
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers._
 import net.ceedubs.ficus.Ficus._
@@ -18,6 +17,7 @@ import play.api.Configuration
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
+import utils.MyEnv
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -27,7 +27,6 @@ import scala.language.postfixOps
  * The credentials auth controller.
  *
  * @param messagesApi The Play messages API.
- * @param env The Silhouette environment.
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info repository implementation.
  * @param credentialsProvider The credentials provider.
@@ -35,16 +34,15 @@ import scala.language.postfixOps
  * @param configuration The Play configuration.
  * @param clock The clock instance.
  */
-class CredentialsAuthController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User, CookieAuthenticator],
-  userService: UserService,
-  authInfoRepository: AuthInfoRepository,
-  credentialsProvider: CredentialsProvider,
-  socialProviderRegistry: SocialProviderRegistry,
-  configuration: Configuration,
-  clock: Clock)
-  extends Silhouette[User, CookieAuthenticator] {
+class CredentialsAuthController @Inject() (val messagesApi: MessagesApi,
+                                               val silhouette: Silhouette[MyEnv[User]],
+                                               userService: UserService,
+                                               authInfoRepository: AuthInfoRepository,
+                                               credentialsProvider: CredentialsProvider,
+                                               socialProviderRegistry: SocialProviderRegistry,
+                                               configuration: Configuration,
+                                               clock: Clock)
+  extends WebController {
 
   /**
    * Authenticates a user against the credentials provider.
@@ -70,7 +68,7 @@ class CredentialsAuthController @Inject() (
                   )
                 case authenticator => authenticator
               }.flatMap { authenticator =>
-                env.eventBus.publish(LoginEvent(user, request, request2Messages))
+                env.eventBus.publish(LoginEvent(user, request))
                 env.authenticatorService.init(authenticator).flatMap { v =>
                   env.authenticatorService.embed(v, result)
                 }

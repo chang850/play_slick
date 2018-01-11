@@ -12,6 +12,7 @@ import models.services.UserService
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
+import utils.MyEnv
 
 import scala.concurrent.Future
 
@@ -19,18 +20,17 @@ import scala.concurrent.Future
  * The social auth controller.
  *
  * @param messagesApi The Play messages API.
- * @param env The Silhouette environment.
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info service implementation.
  * @param socialProviderRegistry The social provider registry.
  */
 class SocialAuthController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User, CookieAuthenticator],
-  userService: UserService,
-  authInfoRepository: AuthInfoRepository,
-  socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User, CookieAuthenticator] with Logger {
+                                          val messagesApi: MessagesApi,
+                                          val silhouette: Silhouette[MyEnv[User]],
+                                          userService: UserService,
+                                           authInfoRepository: AuthInfoRepository,
+                                          socialProviderRegistry: SocialProviderRegistry)
+  extends WebController with Logger {
 
   /**
    * Authenticates a user against a social provider.
@@ -51,7 +51,7 @@ class SocialAuthController @Inject() (
             value <- env.authenticatorService.init(authenticator)
             result <- env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index()))
           } yield {
-            env.eventBus.publish(LoginEvent(user, request, request2Messages))
+            env.eventBus.publish(LoginEvent(user, request))
             result
           }
         }

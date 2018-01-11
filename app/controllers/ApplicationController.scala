@@ -2,12 +2,12 @@ package controllers
 
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.api.{LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
 import play.api.i18n.MessagesApi
+import utils.MyEnv
 
 import scala.concurrent.Future
 
@@ -15,14 +15,10 @@ import scala.concurrent.Future
   * The basic application controller.
   *
   * @param messagesApi            The Play messages API.
-  * @param env                    The Silhouette environment.
   * @param socialProviderRegistry The social provider registry.
   */
-class ApplicationController @Inject()(
-                                       val messagesApi: MessagesApi,
-                                       val env: Environment[User, CookieAuthenticator],
-                                       socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User, CookieAuthenticator] {
+class ApplicationController @Inject()(val messagesApi: MessagesApi, val silhouette: Silhouette[MyEnv[User]],socialProviderRegistry: SocialProviderRegistry)
+  extends WebController {
 
   /**
     * Handles the index action.
@@ -64,8 +60,7 @@ class ApplicationController @Inject()(
     */
   def signOut = SecuredAction.async { implicit request =>
     val result = Redirect(routes.ApplicationController.index())
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
-
+    env.eventBus.publish(LogoutEvent(request.identity, request))
     env.authenticatorService.discard(request.authenticator, result)
   }
 }
