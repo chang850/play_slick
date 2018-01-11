@@ -3,22 +3,22 @@ package controllers
 import javax.inject.Inject
 
 import FormVO.ResourceForm
+import com.mohiva.play.silhouette.api.Silhouette
 import dao.ResourceDao
-import models.ResourceDetail
+import models.{ResourceDetail, User}
 import play.api.data.Form
 import play.api.data.Forms.{ignored, mapping, _}
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
+import utils.MyEnv
 import vo.ResourceVO
 
 
-class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: MessagesApi) extends BaseController {
+class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: MessagesApi , val silhouette: Silhouette[MyEnv[User]])
+  extends WebController with I18nSupport{
 
   val Home = Redirect(routes.ResourceController.list)
-
-
-
 
 //  val userform = Form(
 //    mapping(
@@ -155,7 +155,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //여기가 List 라면
   //Search 바인딩은 어디서 해야 하나
   //list + searchForm => searchForm
-  def list = Action.async { implicit rs =>
+  def list = SecuredAction.async  { implicit rs =>
     resourceSearchForm.bindFromRequest.fold(
       formWithErrors => resourceDao.joinList.map(resoures => Ok(views.html.resource.list(resoures, resourceSearchForm))),
       resourceData => {
