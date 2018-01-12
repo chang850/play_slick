@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
-import dao.ResourceDao
+import daos.ResourceDao
 import forms.ResourceAddForm
 import models.User
 import play.api.data.Form

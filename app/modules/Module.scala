@@ -14,7 +14,7 @@ import com.mohiva.play.silhouette.impl.util._
 import com.mohiva.play.silhouette.password.BCryptPasswordHasher
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
-import dao.{PasswordInfoDAO, UserDAO, UserDAOImpl}
+import daos.{PasswordInfoDAO, UserDAO, UserDAOImpl}
 import models.User
 import models.services.{UserService, UserServiceImpl}
 import net.ceedubs.ficus.Ficus._

@@ -1,6 +1,6 @@
 package forms
 
-import dao.BaseEntity
+import models.BaseEntity
 import play.api.data.Form
 import play.api.data.Forms._
 

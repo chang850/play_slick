@@ -1,10 +1,10 @@
-package dao
+package daos
 
 import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.User
+import models.{ModelTable, User}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 

@@ -1,4 +1,4 @@
-package dao
+package models
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import play.api.db.slick.HasDatabaseConfigProvider

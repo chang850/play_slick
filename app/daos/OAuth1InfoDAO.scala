@@ -1,54 +1,54 @@
-package dao
+package daos
 
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.api.util.PasswordInfo
+import com.mohiva.play.silhouette.impl.providers.OAuth1Info
 import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
+import models.ModelTable
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
 
 /**
- * The DAO to store the password information.
+ * The DAO to store the OAuth1 information.
  */
-class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
-    extends DelegableAuthInfoDAO[PasswordInfo] with ModelTable {
+class OAuth1InfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
+    extends DelegableAuthInfoDAO[OAuth1Info] with ModelTable {
 
   import profile.api._
 
-  protected def passwordInfoQuery(loginInfo: LoginInfo) = for {
+  protected def oAuth1InfoQuery(loginInfo: LoginInfo) = for {
     dbLoginInfo <- loginInfoQuery(loginInfo)
-    dbPasswordInfo <- slickPasswordInfos if dbPasswordInfo.loginInfoId === dbLoginInfo.id
-  } yield dbPasswordInfo
-  
+    dbOAuth1Info <- slickOAuth1Infos if dbOAuth1Info.loginInfoId === dbLoginInfo.id
+  } yield dbOAuth1Info
+
   // Use subquery workaround instead of join to get authinfo because slick only supports selecting
   // from a single table for update/delete queries (https://github.com/slick/slick/issues/684).
-  protected def passwordInfoSubQuery(loginInfo: LoginInfo) =
-    slickPasswordInfos.filter(_.loginInfoId in loginInfoQuery(loginInfo).map(_.id))
+  protected def oAuth1InfoSubQuery(loginInfo: LoginInfo) =
+    slickOAuth1Infos.filter(_.loginInfoId in loginInfoQuery(loginInfo).map(_.id))
 
-  protected def addAction(loginInfo: LoginInfo, authInfo: PasswordInfo) =
+  protected def addAction(loginInfo: LoginInfo, authInfo: OAuth1Info) =
     loginInfoQuery(loginInfo).result.head.flatMap { dbLoginInfo =>
-      slickPasswordInfos +=
-        DBPasswordInfo(authInfo.hasher, authInfo.password, authInfo.salt, dbLoginInfo.id.get)
+      slickOAuth1Infos += DBOAuth1Info(None, authInfo.token, authInfo.secret, dbLoginInfo.id.get)
     }.transactionally
-    
-  protected def updateAction(loginInfo: LoginInfo, authInfo: PasswordInfo) =
-    passwordInfoSubQuery(loginInfo).
-      map(dbPasswordInfo => (dbPasswordInfo.hasher, dbPasswordInfo.password, dbPasswordInfo.salt)).
-      update((authInfo.hasher, authInfo.password, authInfo.salt))
-  
+
+  protected def updateAction(loginInfo: LoginInfo, authInfo: OAuth1Info) =
+    oAuth1InfoSubQuery(loginInfo).
+      map(dbOAuthInfo => (dbOAuthInfo.token, dbOAuthInfo.secret)).
+      update((authInfo.token, authInfo.secret))
+
   /**
    * Finds the auth info which is linked with the specified login info.
    *
    * @param loginInfo The linked login info.
    * @return The retrieved auth info or None if no auth info could be retrieved for the given login info.
    */
-  def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-    db.run(passwordInfoQuery(loginInfo).result.headOption).map { dbPasswordInfoOption =>
-      dbPasswordInfoOption.map(dbPasswordInfo => 
-        PasswordInfo(dbPasswordInfo.hasher, dbPasswordInfo.password, dbPasswordInfo.salt))
+  def find(loginInfo: LoginInfo): Future[Option[OAuth1Info]] = {
+    val result = db.run(oAuth1InfoQuery(loginInfo).result.headOption)
+    result.map { dbOAuth1InfoOption =>
+      dbOAuth1InfoOption.map(dbOAuth1Info => OAuth1Info(dbOAuth1Info.token, dbOAuth1Info.secret))
     }
   }
 
@@ -59,7 +59,7 @@ class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigP
    * @param authInfo The auth info to add.
    * @return The added auth info.
    */
-  def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] =
+  def add(loginInfo: LoginInfo, authInfo: OAuth1Info): Future[OAuth1Info] =
     db.run(addAction(loginInfo, authInfo)).map(_ => authInfo)
 
   /**
@@ -69,7 +69,7 @@ class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigP
    * @param authInfo The auth info to update.
    * @return The updated auth info.
    */
-  def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = 
+  def update(loginInfo: LoginInfo, authInfo: OAuth1Info): Future[OAuth1Info] =
     db.run(updateAction(loginInfo, authInfo)).map(_ => authInfo)
 
   /**
@@ -82,12 +82,12 @@ class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigP
    * @param authInfo The auth info to save.
    * @return The saved auth info.
    */
-  def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    val query = loginInfoQuery(loginInfo).joinLeft(slickPasswordInfos).on(_.id === _.loginInfoId)
+  def save(loginInfo: LoginInfo, authInfo: OAuth1Info): Future[OAuth1Info] = {
+    val query = loginInfoQuery(loginInfo).joinLeft(slickOAuth1Infos).on(_.id === _.loginInfoId)
     val action = query.result.head.flatMap {
-      case (dbLoginInfo, Some(dbPasswordInfo)) => updateAction(loginInfo, authInfo)
-      case (dbLoginInfo, None) => addAction(loginInfo, authInfo)
-    }
+      case (dbLoginInfo, Some(dbOAuth1Info)) => updateAction(loginInfo, authInfo)
+      case (dbLoginInfo, None)               => addAction(loginInfo, authInfo)
+    }.transactionally
     db.run(action).map(_ => authInfo)
   }
 
@@ -98,5 +98,5 @@ class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigP
    * @return A future to wait for the process to be completed.
    */
   def remove(loginInfo: LoginInfo): Future[Unit] =
-    db.run(passwordInfoSubQuery(loginInfo).delete).map(_ => ())
+    db.run(oAuth1InfoSubQuery(loginInfo).delete).map(_ => ())
 }

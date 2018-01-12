@@ -1,4 +1,4 @@
-package dao
+package models
 
 object BaseEntity extends ModelEntity {
 

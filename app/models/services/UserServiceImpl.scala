@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import dao.UserDAO
+import daos.UserDAO
 import models.User
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future

@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import dao.{ProjectDao, TaskDao}
+import daos.{ProjectDao, TaskDao}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, Controller}

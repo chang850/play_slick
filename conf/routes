@@ -28,10 +28,7 @@ PATCH   /tasks/:id                           controllers.ProjectController.modif
 #RESOURCE
 GET     /resource/list                       controllers.ResourceController.list
 POST    /resource/save                       controllers.ResourceController.save
-GET     /resource/create                       controllers.ResourceController.create
-
-
-# Home page
+GET     /resource/create                     controllers.ResourceController.create
 
 GET         /signIn                          controllers.ApplicationController.signIn
 GET         /signUp                          controllers.ApplicationController.signUp

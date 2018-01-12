@@ -1,8 +1,9 @@
-package dao
+package daos
 
 import javax.inject.Inject
 
 import forms.ResourceAddForm
+import models.ModelTable
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 import vo.ResourceVO
