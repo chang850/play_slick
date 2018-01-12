@@ -14,7 +14,7 @@ import scala.concurrent.Future
  * The DAO to store the OAuth1 information.
  */
 class OAuth1InfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
-    extends DelegableAuthInfoDAO[OAuth1Info] with DAOSlick {
+    extends DelegableAuthInfoDAO[OAuth1Info] with ModelTable {
 
   import profile.api._
 

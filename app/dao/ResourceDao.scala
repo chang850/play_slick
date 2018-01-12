@@ -2,44 +2,23 @@ package dao
 
 import javax.inject.Inject
 
-import FormVO.ResourceForm
+import forms.ResourceAddForm
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
-import models.{Resource, ResourceDetail}
 import vo.ResourceVO
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext)
-  extends HasDatabaseConfigProvider[JdbcProfile] {
+  extends HasDatabaseConfigProvider[JdbcProfile] with ModelTable {
 
   import profile.api._
-  val resourceList: TableQuery[Resources] = TableQuery[Resources]
-  val resourceDetailList: TableQuery[ResourcesDetail] = TableQuery[ResourcesDetail]
-
-  //Resource
-  class Resources(tag: Tag) extends Table[Resource](tag, "MT_RESOURCE") {
-    def id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-    def resourceKey = column[String]("RESOURCE_KEY")
-    def resourceName = column[String]("RESOURCE_NAME")
-    def * = (id, resourceKey, resourceName) <> (Resource.tupled, Resource.unapply)
-  }
-
-  //ResourceDetail List
-  class ResourcesDetail(tag: Tag) extends Table[ResourceDetail](tag, "MT_RESOURCE_DETAIL") {
-    def id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-    def resourceText = column[String]("RESOURCE_TEXT")
-    def resourceLocale = column[String]("RESOURCE_LOCALE")
-    def resourceKey = column[Long]("RESOURCE_KEY")
-    def resoureFk = foreignKey("RESOURCE_FK", resourceKey, resourceList)(_.id, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
-    def * = (id, resourceText, resourceLocale, resourceKey) <> (ResourceDetail.tupled, ResourceDetail.unapply)
-  }
 
   //조회
-//  def list: Future[List[Resource]] = {
-//    val query = resourceList.to[List].result
-//    db.run(query)
-//  }
+  //  def list: Future[List[Resource]] = {
+  //    val query = resourceList.to[List].result
+  //    db.run(query)
+  //  }
 
   //delete query
   def delete(id: Long): Future[Int] = {
@@ -68,60 +47,59 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
     resourceDetailList returning resourceDetailList.map(_.id) += resourceDetail
   }
 
-//  def insert(resourceDetail: ResourceDetail): Future[Unit] = {
-//    db.run(resourceDetailList += resourceDetail).map(_ => ())
-//  }
+  //  def insert(resourceDetail: ResourceDetail): Future[Unit] = {
+  //    db.run(resourceDetailList += resourceDetail).map(_ => ())
+  //  }
 
   //One To Many 저장 완료
-  def saveResourceForm(resourceForm: ResourceForm): Future[Seq[Long]] = {
-
+  def saveResourceForm(resourceForm: ResourceAddForm.Data): Future[Seq[Long]] = {
     val resourceData = resourceForm.resource
     val resourceDataDetailList = resourceForm.resourceDetailList
     val interaction = for {
-          resourceId <- resourceList returning resourceList.map(_.id) += resourceData
-          id <-DBIO.sequence(resourceDataDetailList.map(u=>insert(ResourceDetail(u.id,u.resourceText, u.resourceLocale, resourceId))))
-//          resourceDetailData <- resourceDataDetailList
-//          id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
-     }yield id
+      resourceId <- resourceList returning resourceList.map(_.id) += Resource(resourceData.id, resourceData.resourceKey, resourceData.resourceName)
+      id <- DBIO.sequence(resourceDataDetailList.map(u => insert(ResourceDetail(u.id, u.resourceText, u.resourceLocale, resourceId))))
+      //          resourceDetailData <- resourceDataDetailList
+      //          id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
+    } yield id
 
     db.run(interaction.transactionally)
     //    val resourceData = Resource(1, "changhee", "mp")
     //    val resourceDataDetailList : Seq[ResourceDetail] = Seq(ResourceDetail(1,"changhee", "mp9709", 1))
-//    resourceDataDetailList match {
-//      case Nil => save(resourceData)
-//      case _=> val interaction = for {
-//        resourceId <- resourceList returning resourceList.map(_.id) += resourceData
-//        resourceDetailData <- resourceDataDetailList
-//        id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceDetailData.id))
-//      }yield id
-//
-//      db.run(interaction.transactionally)
-//    }
-//    val interaction = for {
-//      resourceDetailData <- resourceDataDetailList
-//      id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
-//    }yield id
+    //    resourceDataDetailList match {
+    //      case Nil => save(resourceData)
+    //      case _=> val interaction = for {
+    //        resourceId <- resourceList returning resourceList.map(_.id) += resourceData
+    //        resourceDetailData <- resourceDataDetailList
+    //        id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceDetailData.id))
+    //      }yield id
+    //
+    //      db.run(interaction.transactionally)
+    //    }
+    //    val interaction = for {
+    //      resourceDetailData <- resourceDataDetailList
+    //      id <- insert(ResourceDetail(resourceDetailData.id, resourceDetailData.resourceText, resourceDetailData.resourceLocale, resourceId))
+    //    }yield id
   }
 
   //조인 ResourceVO 완료
-//  def joinList : Future[List[ResourceVO]] = {
-//    val query = for {
-//      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
-//    } yield (rd.resourceKey, rd.resourceName, r.resourceLocale, r.resourceText)
-//    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
-//  }
+  //  def joinList : Future[List[ResourceVO]] = {
+  //    val query = for {
+  //      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
+  //    } yield (rd.resourceKey, rd.resourceName, r.resourceLocale, r.resourceText)
+  //    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+  //  }
 
-    def joinList : Future[List[ResourceVO]] = {
-      val query = for {
-        (rd, r) <- resourceList joinLeft  resourceDetailList on (_.id === _.resourceKey)
-      } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
-      db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
-    }
+  def joinList: Future[List[ResourceVO]] = {
+    val query = for {
+      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
+    } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
+    db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
+  }
 
   //keyword 넣고 만든다.
-  def list(searchVO : ResourceVO.SearchVO) : Future[List[ResourceVO]] = {
+  def list(searchVO: ResourceVO.SearchVO): Future[List[ResourceVO]] = {
     val query = for {
-      (rd, r) <- resourceList joinLeft  resourceDetailList on (_.id === _.resourceKey)
+      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
     } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
     db.run(query.to[List].result).map(u => u.map(a => ResourceVO(a._1, a._2, a._3, a._4)))
   }

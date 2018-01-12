@@ -1,6 +1,0 @@
-package dao
-
-
-class TeamDao {
-
-}

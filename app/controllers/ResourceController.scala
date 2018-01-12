@@ -2,12 +2,12 @@ package controllers
 
 import javax.inject.Inject
 
-import FormVO.ResourceForm
 import com.mohiva.play.silhouette.api.Silhouette
 import dao.ResourceDao
-import models.{ResourceDetail, User}
+import forms.ResourceAddForm
+import models.User
 import play.api.data.Form
-import play.api.data.Forms.{ignored, mapping, _}
+import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
@@ -27,7 +27,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 //      "email" -> nonEmptyText,
 //      "password" -> nonEmptyText,
 //      "company" -> ignored(0L)
-//    )(models.User.apply)(models.User.unapply))
+//    )(BaseEntity.User.apply)(BaseEntity.User.unapply))
 //
 //  //사용자 추가 폼을 내려주는데... //popup call 할때 정보 내려주는 식으로 하면 될듯
 //  def form = withAuth { username => implicit rs =>
@@ -100,7 +100,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //      "id" -> ignored(0L),
   //      "resourceKey" -> nonEmptyText,
   //      "resourceName" -> nonEmptyText
-  //    )(models.Resource.apply)(models.Resource.unapply))
+  //    )(BaseEntity.Resource.apply)(BaseEntity.Resource.unapply))
 
   //  val resourceDataForm : Form[ResourceData] = Form(
   //    mapping(
@@ -112,23 +112,23 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //          "id" -> ignored(0L),
   //          "resourceKey" -> nonEmptyText,
   //          "resourceName" -> nonEmptyText
-  //        )(models.Resource.apply)(models.Resource.unapply))
-  //    )(models.ResourceData.apply)(models.ResourceData.unapply))
-  val resourceForm: Form[ResourceForm] = Form(
-    mapping(
-      "resource" -> mapping(
-        "id" -> ignored(0L),
-        "resourceKey" -> nonEmptyText,
-        "resourceName" -> nonEmptyText
-      )(models.Resource.apply)(models.Resource.unapply),
-      "resourceDetailList" -> seq[ResourceDetail](
-        mapping(
-          "id" -> ignored(0L),
-          "resourceText" -> nonEmptyText,
-          "resourceLocale" -> nonEmptyText,
-          "resourceKey" -> ignored(0L)
-        )(models.ResourceDetail.apply)(models.ResourceDetail.unapply))
-    )(FormVO.ResourceForm.apply)(FormVO.ResourceForm.unapply))
+  //        )(BaseEntity.Resource.apply)(BaseEntity.Resource.unapply))
+  //    )(BaseEntity.ResourceData.apply)(BaseEntity.ResourceData.unapply))
+//  val resourceForm: Form[ResourceForm] = Form(
+//    mapping(
+//      "resource" -> mapping(
+//        "id" -> ignored(0L),
+//        "resourceKey" -> nonEmptyText,
+//        "resourceName" -> nonEmptyText
+//      )(BaseEntity.Resource.apply)(BaseEntity.Resource.unapply),
+//      "resourceDetailList" -> seq[ResourceDetail](
+//        mapping(
+//          "id" -> ignored(0L),
+//          "resourceText" -> nonEmptyText,
+//          "resourceLocale" -> nonEmptyText,
+//          "resourceKey" -> ignored(0L)
+//        )(BaseEntity.ResourceDetail.apply)(BaseEntity.ResourceDetail.unapply))
+//    )(FormVO.ResourceForm.apply)(FormVO.ResourceForm.unapply))
 
   //search Form 작업 완료
   //1.select box
@@ -169,13 +169,13 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 
   //Form Data 생성
   def create = Action { implicit rs =>
-    Ok(views.html.resource.add(resourceForm))
+    Ok(views.html.resource.add(ResourceAddForm.form))
   }
 
   //한방에 저장 하려면 해당 vo 를 조합 하는 형태로 만든다.
   //저장
   def save = Action.async { implicit rs =>
-    resourceForm.bindFromRequest.fold(
+    ResourceAddForm.form.bindFromRequest.fold(
       formWithErrors => resourceDao.joinList.map(resoures => BadRequest(views.html.resource.add(formWithErrors))),
       resourceData => {
         for {

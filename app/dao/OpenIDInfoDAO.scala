@@ -14,7 +14,7 @@ import scala.concurrent.Future
  * The DAO to store the OpenID information.
  */
 class OpenIDInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
-    extends DelegableAuthInfoDAO[OpenIDInfo] with DAOSlick {
+    extends DelegableAuthInfoDAO[OpenIDInfo] with ModelTable {
 
   import profile.api._
 

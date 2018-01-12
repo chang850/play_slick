@@ -14,7 +14,7 @@ import scala.concurrent.Future
  * The DAO to store the password information.
  */
 class PasswordInfoDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
-    extends DelegableAuthInfoDAO[PasswordInfo] with DAOSlick {
+    extends DelegableAuthInfoDAO[PasswordInfo] with ModelTable {
 
   import profile.api._
 
