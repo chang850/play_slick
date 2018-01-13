@@ -10,19 +10,14 @@ import utils.MyEnv
 
 import scala.concurrent.Future
 
-/**
-  * The basic application controller.
-  *
-  * @param messagesApi            The Play messages API.
-  */
-class ApplicationController @Inject()(val messagesApi: MessagesApi, val silhouette: Silhouette[MyEnv[User]])
-  extends WebController {
+class ApplicationController @Inject()(val messagesApi: MessagesApi, val silhouette: Silhouette[MyEnv[User]]) extends WebController {
 
   /**
     * Handles the index action.
     *
     * @return The result to display.
     */
+  //시작 점 home
   def index = SecuredAction.async { implicit request =>
     Future.successful(Ok(views.html.home(request.identity)))
   }

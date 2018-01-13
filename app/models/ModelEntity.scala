@@ -1,6 +1,5 @@
 package models
 
-//Model class 한곳으로
 trait ModelEntity {
 
   case class DBUser(

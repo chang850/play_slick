@@ -1,15 +1,32 @@
-#PROJECT
-#GET     /                                    controllers.UserController.form
+#INDEX --> 시작 점
 GET         /                                controllers.ApplicationController.index
 
+#RESOURCE
+GET         /resource                        controllers.ResourceController.list
+GET         /resource/list                   controllers.ResourceController.list
+POST        /resource/save                   controllers.ResourceController.save
+GET         /resource/create                 controllers.ResourceController.create
 
-#Resource
-GET     /resource                            controllers.ResourceController.list
-#PROJECT
-GET     /projects/list                       controllers.ProjectController.list
-GET     /projects/:id                        controllers.ProjectController.view(id: Long)
-PUT     /projects/:id/:name                  controllers.ProjectController.addTaskToProject(name: String, id: Long)
-DELETE  /projects/:name                      controllers.ProjectController.delete(name: String)
+
+#AUTHENTICATION
+GET         /signIn                          controllers.ApplicationController.signIn
+GET         /signUp                          controllers.ApplicationController.signUp
+GET         /signOut                         controllers.ApplicationController.signOut
+POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
+POST        /signUp                          controllers.SignUpController.signUp
+
+#STATIC
+GET         /assets/*file                    controllers.Assets.at(path="/public", file)
+GET         /webjars/*file                   controllers.WebJarAssets.at(file)
+
+#PROJECT - 삭제 예정
+GET        /projects/list                    controllers.ProjectController.list
+GET        /projects/:id                     controllers.ProjectController.view(id: Long)
+PUT        /projects/:id/:name               controllers.ProjectController.addTaskToProject(name: String, id: Long)
+DELETE     /projects/:name                   controllers.ProjectController.delete(name: String)
+PATCH      /tasks/:id                        controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
+
+
 #POST    /uploadFile                          controllers.UserController.uploadFile
 #USER
 #GET     /userList                            controllers.UserController.list
@@ -23,19 +40,3 @@ DELETE  /projects/:name                      controllers.ProjectController.delet
 #GET     /login                              controllers.LoginController.login
 #POST    /login                              controllers.LoginController.authenticate
 #GET     /logout                             controllers.LoginController.logout
-PATCH   /tasks/:id                           controllers.ProjectController.modifyTask(id: Long, color:Option[String] ?= None)
-
-#RESOURCE
-GET     /resource/list                       controllers.ResourceController.list
-POST    /resource/save                       controllers.ResourceController.save
-GET     /resource/create                     controllers.ResourceController.create
-
-GET         /signIn                          controllers.ApplicationController.signIn
-GET         /signUp                          controllers.ApplicationController.signUp
-GET         /signOut                         controllers.ApplicationController.signOut
-#GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
-POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
-POST        /signUp                          controllers.SignUpController.signUp
-
-GET         /assets/*file                    controllers.Assets.at(path="/public", file)
-GET         /webjars/*file                   controllers.WebJarAssets.at(file)
