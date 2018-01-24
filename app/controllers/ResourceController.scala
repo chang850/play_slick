@@ -4,13 +4,13 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.Silhouette
 import daos.ResourceDao
-import forms.ResourceAddForm
+import forms.{ResourceAddForm, ResourceSearchForm}
 import models.User
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import utils.MyEnv
 import vo.ResourceVO
 
@@ -135,13 +135,13 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //2.radio box
   //3.check boxk
   //4.text
-  val resourceSearchForm: Form[ResourceVO.SearchVO] = Form(
-    mapping(
-      "keywordString" -> text,
-      "optionSelect" -> text,
-      "radioInput" -> text
-    )(vo.ResourceVO.SearchVO.apply)(vo.ResourceVO.SearchVO.unapply)
-  )
+//  val resourceSearchForm: Form[ResourceVO.SearchVO] = Form(
+//    mapping(
+//      "keywordString" -> text,
+//      "optionSelect" -> text,
+//      "radioInput" -> text
+//    )(vo.ResourceVO.SearchVO.apply)(vo.ResourceVO.SearchVO.unapply)
+//  )
   //작업 진행중
   //search Form 작업
   //search Form 을 만들고 List 와 함께 던진다.
@@ -155,13 +155,15 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //여기가 List 라면
   //Search 바인딩은 어디서 해야 하나
   //list + searchForm => searchForm
-  def list = SecuredAction.async  { implicit rs =>
-    resourceSearchForm.bindFromRequest.fold(
-      formWithErrors => resourceDao.joinList.map(resoures => Ok(views.html.resource.list(resoures, resourceSearchForm))),
+  //page 를 여기서 탈것인데.............
+
+  def list: Action[AnyContent] = SecuredAction.async  { implicit rs =>
+    ResourceSearchForm.form.bindFromRequest.fold(
+      formWithErrors => resourceDao.joinList.map(resoures => Ok(views.html.resource.list(resoures, ResourceSearchForm.form))),
       resourceData => {
         for {
           resource <- resourceDao.list(resourceData)
-        } yield Ok(views.html.resource.list(resource, resourceSearchForm))
+        } yield Ok(views.html.resource.list(resource, ResourceSearchForm.form))
       }
     )
     //resourceDao.joinList.map(resource=> Ok(views.html.resource.joinlist(resource, resourceSearchForm)))
@@ -174,7 +176,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 
   //한방에 저장 하려면 해당 vo 를 조합 하는 형태로 만든다.
   //저장
-  def save = Action.async { implicit rs =>
+  def save: Action[AnyContent] = Action.async { implicit rs =>
     ResourceAddForm.form.bindFromRequest.fold(
       formWithErrors => resourceDao.joinList.map(resoures => BadRequest(views.html.resource.add(formWithErrors))),
       resourceData => {
@@ -188,7 +190,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 
 
   //삭제 - 완료
-  def delete(id: Long) = Action.async { implicit rs =>
+  def delete(id: Long): Action[AnyContent] = Action.async { implicit rs =>
     resourceDao.delete(id).map(num => Ok(s"$num projects deleted"))
   }
 
@@ -199,11 +201,13 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
 //    resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
 //  }
 
+  //Model 객체 에 집어 넣을수 가 없음
   //작업 진행중
   //상세보기 ===> Resource + ResourceDetailList 로 해야한다.
-//  def view(id: Long) = Action.async { implicit rs =>
-//    //두단계로 뿌릴 것인가 ? vo 를 만들 것인가 선택
-//    resourceDao.joinList
-//    resourceDao.list.map(resource => Ok(views.html.resource.list(resource)))
+  //def view(id: Long) = Action.async { implicit rs =>
+  // for {
+  //  Some(resource) <- resourceDao.findById(id)
+    //resourceDetail <- resourceDao.findByResourceId(id)
+  // } yield Ok(views.html.resource.view(resource,  resourceDetail))
 //  }
 }

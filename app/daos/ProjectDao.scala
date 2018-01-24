@@ -21,9 +21,7 @@ class ProjectDao @Inject()(taskDAO: TaskDao)(protected val dbConfigProvider: Dat
   class ProjectsTable(tag: Tag) extends Table[Project](tag, "PROJECT") {
 
     def id = column[Long]("ID", O.AutoInc, O.PrimaryKey)
-
     def name = column[String]("NAME")
-
     def * = (id, name) <> (Project.tupled, Project.unapply)
   }
 

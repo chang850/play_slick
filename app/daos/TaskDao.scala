@@ -40,7 +40,7 @@ class TaskDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     Tasks.filter(_.color === color).result.headOption
 
   def findByProjectId(projectId: Long): Future[List[Task]] =
-    db.run(Tasks.filter(_.project === projectId).to[List].result)
+  db.run(Tasks.filter(_.project === projectId).to[List].result)
 
   def findByReadyStatus: DBIO[List[Task]] =
     Tasks.filter(_.status === TaskStatus.ready).to[List].result

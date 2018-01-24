@@ -1,10 +1,10 @@
 @(resourceForm: Form[forms.ResourceAddForm.Data])(implicit message: Messages)
-@import b3.vertical.fieldConstructor
+@import b3.inline.fieldConstructor
 @main("리소스 추가") {
     <div class="panel panel-primary">
         <div class="panel-heading">리소스</div>
         <div class="panel-body">
-        @b3.form(routes.ResourceController.save) {
+        @helper.form(action = routes.ResourceController.save) {
             @b3.text(resourceForm("resource.resourceKey"), '_label -> "언어리소스 ID", 'placeholder -> "Pick a username")
             @b3.text(resourceForm("resource.resourceName"), '_label -> "언어리소스 이름", 'placeholder -> "Your email address")
             @helper.repeat(resourceForm("resourceDetailList"), min = 2) { resourceField =>
