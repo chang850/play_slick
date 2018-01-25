@@ -156,7 +156,7 @@ class ResourceController @Inject()(resourceDao: ResourceDao)(val messagesApi: Me
   //Search 바인딩은 어디서 해야 하나
   //list + searchForm => searchForm
   //page 를 여기서 탈것인데.............
-
+  //나는 Form action 이 아닌데.....
   def list: Action[AnyContent] = SecuredAction.async  { implicit rs =>
     ResourceSearchForm.form.bindFromRequest.fold(
       formWithErrors => resourceDao.joinList.map(resoures => Ok(views.html.resource.list(resoures, ResourceSearchForm.form))),

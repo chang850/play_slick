@@ -56,4 +56,17 @@
             </tbody>
         </table>
     </div>
+
+    <div id="page-selection" align="center"></div>
+    <script>
+            //total 을 가능 할거 같고........
+            //num 로 쿼리 할 경우 search 랑 num 이랑 가치 보낼거냐능.....
+            //total 과 현재 페이지 넘버는 query 단에서만 알수 있기 때문에........ 리스트 마다 죄다 붙을 텐데......
+            $('#page-selection').bootpag({
+                total: 10
+            }).on("page", function(event, num){
+
+//                $("#content").html("Insert content");
+            });
+    </script>
 }

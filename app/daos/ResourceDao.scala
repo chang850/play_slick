@@ -106,6 +106,7 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
     db.run(resourceDetailList.filter(_.resourceKey === resourceId).to[List].result)
   }
 
+
   def list(searchVO: ResourceVO.SearchVO): Future[List[ResourceVO]] = {
     val query = for {
       (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
@@ -115,73 +116,47 @@ class ResourceDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
 
   //Future Type = > Page[ResourceListVO] 를 넘기는 방식
   def pageList(searchVO: ResourceVO.SearchVO): Future[Page[ResourceListVO]] = {
+    val query = for {
+      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
+    } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
 
-    //두개의 for문 하나로 합치자.
-    //이걸 포문으로 안돈다면
-    //성공
-//    val query = for {
-//      (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
-//    } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
-//
-//    for {
-//        result <- db.run(query.to[List].result)
-//    } yield Page(result.map(r => ResourceListVO(r._1, r._2, r._3, r._4)), 1, 2, 3)
-
-        //합치기 1차 시도
-        //조회 하면서 담을수는 업쓸까나..........................................
-      //씨바바바밥ㅁ바
-        val query = for {
-          (rd, r) <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
-        } yield (rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText))
-        for {
-            result <- db.run(query.to[List].result)
-        } yield Page(result.map(r => ResourceListVO(r._1, r._2, r._3, r._4)), 1, 2, 3)
-
-//    val resultList = for {
-//      //시퀀스에서 하나씩 꺼내서 page 넣을때
-//      //rd, r 변수에 담겨 져있는 상태에서
-//      //담아서
-//      //쿼리 벼수 담아서 실행
-//      (rd, r)  <- resourceList joinLeft resourceDetailList on (_.id === _.resourceKey)
-//      query <- db.run((rd.resourceKey, rd.resourceName, r.map(_.resourceLocale), r.map(_.resourceText)).result)
-//      //result <- db.run(query.to[List].result)
-//    } yield ResourceListVO(query._1, query._2, query._3, query._4)
-//
-//      Page(resultList, 1,2,3)
+    for {
+      result <- db.run(query.to[List].result)
+    } yield Page(result.map(r => ResourceListVO(r._1, r._2, r._3, r._4)), 1, 2, 3)
   }
 
 
-//  def userCompanylist: Future[Page[UserListVO]] = {
-//    //JOIN 문 생성
-//    val query = for {
-//      (u, c) <- Users join Companys on (_.company === _.id)
-//    } yield (c.name, u.username, u.email)
-//
-//
-//    //db.run(query.to[List].result).map(r => r.map(a => UserListVO(a._1, a._2, a._3)))
-//    for {
-//      result <- db.run(query.to[List].result)
-//    } yield Page(result.map(r => UserListVO(r._1, r._2, r._3)), 1, 2, 3)
-//
-//    //    for {
-//    //      list = query.result.map { rows => UserListVO(rows.name, rows.username, rows.email)
-//    //
-//    //        }
-//    //      }
-//    //     result = db.run(list)
-//    //    } yield UserListVO("", "" ,"")
-//    //
-//    //    val result = db.run(query.result)
-//
-//    //여기서 List를 어떻게 할것인가????????
-//    //java code 라면 class 생성 해서 해당 list 를 만들어서 리턴인데.............
-//    //    for(r <-result) {
-//    //      for(a <-r){
-//    //        var t:UserListVO = UserListVO(a._1, a._2, a._3)
-//    //      }
-//    //    }
-//
-//  }
+  //  def userCompanylist: Future[Page[UserListVO]] = {
+  //    //JOIN 문 생성
+  //    val query = for {
+  //      (u, c) <- Users join Companys on (_.company === _.id)
+  //    } yield (c.name, u.username, u.email)
+  //
+  //
+  //    //db.run(query.to[List].result).map(r => r.map(a => UserListVO(a._1, a._2, a._3)))
+  //    for {
+  //      result <- db.run(query.to[List].result)
+  //    } yield Page(result.map(r => UserListVO(r._1, r._2, r._3)), 1, 2, 3)
+  //
+  //    //    for {
+  //    //      list = query.result.map { rows => UserListVO(rows.name, rows.username, rows.email)
+  //    //
+  //    //        }
+  //    //      }
+  //    //     result = db.run(list)
+  //    //    } yield UserListVO("", "" ,"")
+  //    //
+  //    //    val result = db.run(query.result)
+  //
+  //    //여기서 List를 어떻게 할것인가????????
+  //    //java code 라면 class 생성 해서 해당 list 를 만들어서 리턴인데.............
+  //    //    for(r <-result) {
+  //    //      for(a <-r){
+  //    //        var t:UserListVO = UserListVO(a._1, a._2, a._3)
+  //    //      }
+  //    //    }
+  //
+  //  }
 }
 
 
